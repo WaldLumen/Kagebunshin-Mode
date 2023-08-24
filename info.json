@@ -1,0 +1,8 @@
+{
+  "name": "radar",
+  "version": "0.0.1",
+  "title": "radar",
+  "author": "Sylvia Lumen, Fom123",
+  "factorio_version": "1.1.87",
+  "dependencies": ["base"]
+}
