@@ -12,6 +12,11 @@ data:extend({
         name = "issmoke",
         setting_type = "runtime-global",
         default_value = false,
+    },{
+        type = "bool-setting",
+        name = "run",
+        setting_type = "runtime-global",
+        default_value = false,
     }
 
 })

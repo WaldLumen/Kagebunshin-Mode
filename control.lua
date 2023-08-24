@@ -11,3 +11,11 @@ script.on_event(defines.events.on_player_changed_position,
         end
 )
 
+script.on_event(defines.events.on_tick,
+        function(event)
+            local player = game.get_player(event.player_index)
+            if settings.global["run"].value then
+                game.character.walking_state = {walking = true, direction = defines.direction.north};
+            end
+        end
+)
