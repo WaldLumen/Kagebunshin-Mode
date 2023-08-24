@@ -2,7 +2,8 @@
   "name": "radar",
   "version": "0.0.1",
   "title": "radar",
-  "author": "Sylvia Lumen, Fom123",
+  "author": ["Sylvia Lumen, Fom123"],
+  "description": "Mod to transform your character with a radar.\n\n Also, just for fun, you can add a trail of different parkicles behind the character model.",
   "factorio_version": "1.1.87",
   "dependencies": ["base"]
 }
