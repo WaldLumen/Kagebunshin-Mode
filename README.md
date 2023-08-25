@@ -8,4 +8,4 @@ A mod that allows you to create clones that will run and scout the map. Also, ju
 
 ## Guide
 
-Clones spawn if your hero runs liuom to a tree, with the "run" checkbox on, in Mod settings.
+Clones spawn if your hero runs to a tree, with the "run" checkbox on, in Mod settings.
