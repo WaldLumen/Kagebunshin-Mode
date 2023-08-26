@@ -1,15 +1,4 @@
-script.on_event(defines.events.on_player_changed_position,
-        function(event)
-            local player = game.get_player(event.player_index)
-            if settings.global["isfire"].value then
-                player.surface.create_entity{name="fire-flame", position=player.position, force="neutral"};
-            end
-            if settings.global["issmoke"].value then
-                player.surface.create_entity{name="poison-cloud-visual-dummy", position=player.position, force="neutral"};
-            end
 
-        end
-)
 
 -- Define the distance in tiles in front of the player
 local distance_in_front = 1
@@ -20,6 +9,25 @@ local entities_to_consider = { "tree", "big_rock", "enemy" } -- Add other entity
 
 kagebunshins_cords = {}
 kagebunshins = {}
+
+
+
+function spawn_trail(character)
+    local trail_particles = settings.global["trail-particles"].value
+        if trail_particles == "fire" then
+            character.surface.create_entity{name="fire-flame", position=character.position, force="neutral"};
+        end
+
+        if trail_particles == "poison" then
+            character.surface.create_entity{name="poison-cloud-visual-dummy", position=character.position, force="neutral"};
+        end
+
+        if trail_particles == "all" then
+            character.surface.create_entity{name="fire-flame", position=character.position, force="neutral"};
+            character.surface.create_entity{name="poison-cloud-visual-dummy", position=character.position, force="neutral"};
+        end
+
+end
 
 -- returns true if the character moved and false if not
 function is_character_moved(character)
@@ -101,7 +109,7 @@ function create_new_character_behind_player(player)
     local walking_state = player.character.walking_state
     if walking_state then
         new_character.walking_state = walking_state
-        new_character.character_running_speed_modifier = 3
+        new_character.character_running_speed_modifier = settings.global["clone_speed"].value
     end
     return new_character
 end
@@ -130,59 +138,64 @@ script.on_event(defines.events.on_tick,
                 for _, character in pairs(kagebunshins) do
                     if character.valid then -- hack cuz stupid race conditions
                         update_chart(character)
-                        if settings.global["isfire"].value then
-                            character.surface.create_entity{name="fire-flame", position=character.position, force="neutral"};
+                        if settings.global["trail-for-unit"].value == "clones" or settings.global["trail-for-unit"].value =="all" then
+                            spawn_trail(character)
                         end
-                        if settings.global["issmoke"].value then
-                            character.surface.create_entity{name="poison-cloud-visual-dummy", position=character.position, force="neutral"};
-                        end
-
                         if not is_character_moved(character) then
                             delete_character(character)
                         end
                     end
                 end
-            end
 
-            if not settings.global["run"].value then
-                return
-            end
-
-            for _, player in pairs(game.players) do
-                if not player.connected then
-                    repeat -- lua doesn't have a continue statement, so we use this hack
-                        do break end -- goes to next iteration of for
-                    until true
-                end
-
-                local character = player.character
-
-                if not character then
+                if not settings.global["run"].value then
                     return
                 end
 
-                local position = character.position
-                local direction = character.direction
-                local front_position = calculate_front_position(position, direction)
+                for _, player in pairs(game.players) do
+                    if not player.connected then
+                        repeat -- lua doesn't have a continue statement, so we use this hack
+                            do break end -- goes to next iteration of for
+                        until true
+                    end
 
-                -- Find entities in the area in front of the player
-                local entities_in_front = player.surface.find_entities_filtered{
-                    area = {
-                        { x = front_position.x - 0.5, y = front_position.y - 0.5 },
-                        { x = front_position.x + 0.5, y = front_position.y + 0.5 }
-                    },
-                    type = entities_to_consider
-                }
+                    local character = player.character
 
-                -- Now you can process the found entities, like breaking them
-                for _, entity in pairs(entities_in_front) do
-                    -- entity.destroy()
-                    player.mine_entity(entity)
+                    if not character then
+                        return
+                    end
 
-                    -- add character to list, so we can update the map later
-                    create_character(player)
+                    local position = character.position
+                    local direction = character.direction
+                    local front_position = calculate_front_position(position, direction)
 
+                    -- Find entities in the area in front of the player
+                    local entities_in_front = player.surface.find_entities_filtered{
+                        area = {
+                            { x = front_position.x - 0.5, y = front_position.y - 0.5 },
+                            { x = front_position.x + 0.5, y = front_position.y + 0.5 }
+                        },
+                        type = entities_to_consider
+                    }
+
+                    -- Now you can process the found entities, like breaking them
+                    for _, entity in pairs(entities_in_front) do
+                        -- entity.destroy()
+                        player.mine_entity(entity)
+
+                        -- add character to list, so we can update the map later
+                        create_character(player)
+
+                    end
                 end
+            end
+        end
+)
+
+script.on_event(defines.events.on_player_changed_position,
+        function(event)
+            local character = game.get_player(event.player_index)
+            if settings.global["trail-for-unit"].value == "player" or settings.global["trail-for-unit"].value =="all" then
+                spawn_trail(character)
             end
         end
 )
