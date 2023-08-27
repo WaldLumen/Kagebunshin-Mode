@@ -15,22 +15,16 @@ function spawn_trail(character)
     local trail_particles = settings.global["trail-particles"].value
 
     local particle_entities = {
-        ["fire"] = "fire-flame",
-        ["poison"] = "poison-cloud-visual-dummy",
+        ["fire"] = {"fire-flame"},
+        ["poison"] = {"poison-cloud-visual-dummy"},
         ["all"] = {"fire-flame", "poison-cloud-visual-dummy"}
     }
 
     local entities_to_spawn = particle_entities[trail_particles]
-
-    if entities_to_spawn then
-        if type(entities_to_spawn) == "table" then
             for _, entity_name in ipairs(entities_to_spawn) do
                 character.surface.create_entity{name=entity_name, position=character.position, force="neutral"}
             end
-        else
-            character.surface.create_entity{name=entities_to_spawn, position=character.position, force="neutral"}
-        end
-    end
+    
 end
 
 
