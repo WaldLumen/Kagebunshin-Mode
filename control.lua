@@ -12,18 +12,27 @@ kagebunshins_cords = {}
 kagebunshins = {}
 
 function spawn_trail(character)
-    local actions = {
-        ['fire'] = function() character.surface.create_entity{name="fire-flame", position=character.position, force="neutral"} end,
-        ['poison'] = function() character.surface.create_entity{name="poison-cloud-visual-dummy", position=character.position, force="neutral"} end,
-        ['all'] = function()
-            character.surface.create_entity{name="poison-cloud-visual-dummy", position=character.position, force="neutral"}
-            character.surface.create_entity{name="fire-flame", position=character.position, force="neutral"}
-        end
+    local trail_particles = settings.global["trail-particles"].value
+
+    local particle_entities = {
+        ["fire"] = "fire-flame",
+        ["poison"] = "poison-cloud-visual-dummy",
+        ["all"] = {"fire-flame", "poison-cloud-visual-dummy"}
     }
 
-    local selected_action = actions[settings.global["trail-particles"].value]
-    return selected_action() or 'Unknown action'
+    local entities_to_spawn = particle_entities[trail_particles]
+
+    if entities_to_spawn then
+        if type(entities_to_spawn) == "table" then
+            for _, entity_name in ipairs(entities_to_spawn) do
+                character.surface.create_entity{name=entity_name, position=character.position, force="neutral"}
+            end
+        else
+            character.surface.create_entity{name=entities_to_spawn, position=character.position, force="neutral"}
+        end
+    end
 end
+
 
 script.on_event(defines.events.on_tick,
         function(event)
