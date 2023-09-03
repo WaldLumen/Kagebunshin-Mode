@@ -25,11 +25,15 @@ function spawn_trail(character)
         ["all"] = {"fire-flame", "poison-cloud-visual-dummy"}
     }
 
-    local entities_to_spawn = particle_entities[trail_particles]
-            for _, entity_name in ipairs(entities_to_spawn) do
-                character.surface.create_entity{name=entity_name, position=character.position, force="neutral"}
-            end
-    
+    if settings.global["trail-particles"].value == "off" then
+        return
+    else
+        local entities_to_spawn = particle_entities[trail_particles]
+        for _, entity_name in ipairs(entities_to_spawn) do
+            character.surface.create_entity{name=entity_name, position=character.position, force="neutral"}
+        end
+
+    end
 end
 
 function tprint (tbl, indent)
