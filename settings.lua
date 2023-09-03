@@ -1,10 +1,5 @@
 data:extend {
    {
-        type = "bool-setting",
-        name = "run",
-        setting_type = "runtime-global",
-        default_value = false,
-    }, {
         type = "int-setting",
         name = "clone_speed",
         setting_type = "runtime-global",

@@ -1,5 +1,3 @@
-local area = require("area")
-
 -- returns true if the character moved and false if not
 function is_character_moved(character)
     if not kagebunshins_cords[character] then

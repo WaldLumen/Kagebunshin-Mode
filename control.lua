@@ -1,7 +1,11 @@
-local clones = require("clones")
-local _player = require("player")
-local area = require("area")
+require("clones")
+require("player")
+require("area")
+require("button")
 -- Define the distance in tiles in front of the player
+
+
+
 
 
 -- Define the entities you want to consider
@@ -10,8 +14,7 @@ local entities_to_consider = { "tree", "big_rock", "enemy" } -- Add other entity
 
 kagebunshins_cords = {}
 kagebunshins = {}
-chunks = {}
-_direction = nil
+
 
 function spawn_trail(character)
     local trail_particles = settings.global["trail-particles"].value
@@ -54,72 +57,26 @@ function tprint (tbl, indent)
     return toprint
 end
 
-script.on_event(defines.events. on_chunk_generated,
-        function(event)
-            local playerPosition = game.players[1] .position
-            local ex = findEdgeExploredChunks(game.surfaces["nauvis"])
-            local nearestChunk = getNearestChunkToPlayer(playerPosition, ex)
-            _direction = getDirectionToNearestChunk(playerPosition, nearestChunk)
-
-        end
-)
 
 script.on_event(defines.events.on_tick,
         function(event)
+            --Узнаём путь до близжайсшего чанка(внести  в отдельное событие.)
+
+
             if event.tick % 1 == 0  then
                 for _, character in pairs(kagebunshins) do
                     if character.valid then -- hack cuz stupid race conditions
-                        clones.update_chart(character)
+                        update_chart(character)
                         if settings.global["trail-for-unit"].value == "clones" or settings.global["trail-for-unit"].value =="all" then
                             spawn_trail(character)
                         end
-                        if not clones.is_character_moved(character) then
-                            clones.delete_character(character)
+                        if not is_character_moved(character) then
+                            delete_character(character)
                         end
                     end
                 end
-
-                -- Interrupts execution of further code if run is not true
-                if not settings.global["run"].value then
-                    return
-                end
-
-                for _, player in pairs(game.players) do
-                    if not player.connected then
-                        repeat -- lua doesn't have a continue statement, so we use this hack
-                            do break end -- goes to next iteration of for
-                        until true
-                    end
-
-                    local character = player.character
-
-                    if not character then
-                        return
-                    end
-
-                    local position = character.position
-                    local direction = character.direction
-                    local front_position = _player.calculate_front_position(position, direction)
-
-                    -- Find entities in the area in front of the player
-                    local entities_in_front = player.surface.find_entities_filtered{
-                        area = {
-                            { x = front_position.x - 0.5, y = front_position.y - 0.5 },
-                            { x = front_position.x + 0.5, y = front_position.y + 0.5 }
-                        },
-                        type = entities_to_consider
-                    }
-
-                    -- Now you can process the found entities, like breaking them
-                    for _, entity in pairs(entities_in_front) do
-                        -- entity.destroy()
-                        player.mine_entity(entity)
-                        clones.create_character(player, _direction)
-                         end
-
-                    end
-                end
             end
+        end
 )
 
 script.on_event(defines.events.on_player_changed_position,
