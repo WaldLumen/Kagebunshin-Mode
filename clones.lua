@@ -28,7 +28,7 @@ function create_new_character_behind_player(player, direction)
     local offset = {x = -1, y = 0}  -- You can adjust the offset as needed
     local new_position = {x = player_position.x + offset.x, y = player_position.y + offset.y}
 
-    surface = player.character.surface
+    surface = player.surface
 
     -- Spawn a new character
     local new_character = surface.create_entity{

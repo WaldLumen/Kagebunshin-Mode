@@ -4,12 +4,17 @@ _direction = nil
 
 -- Создаем новую кнопку
 local function createHelloButton(player)
-    return player.gui.top.add{
-        type = "button",
-        name = "hello_button",
-        caption = "Spawn Clone",
-        tooltip = "Нажмите, чтобы заспавнить клонов"
-    }
+    local button = player.gui.top["kagebunshins_spawn"]
+    if not (button and button.valid) then
+        button = player.gui.top.add{
+            type = "button",
+            name = "kagebunshins_spawn",
+            caption = "Clones",
+            tooltip = "Click to spawn clone"
+        }
+    end
+    return button
+
 end
 
 -- Обработчик нажатия кнопки
@@ -33,7 +38,7 @@ end)
 
 script.on_event(defines.events.on_gui_click,
         function(event)
-    if event.element and event.element.name == "hello_button" then
+    if event.element and event.element.name == "kagebunshins_spawn" then
         onHelloButtonClick(game.players[1])
     end
 end)
