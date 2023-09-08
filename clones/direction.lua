@@ -18,9 +18,8 @@ function getDirectionToNearestChunk(playerPosition, nearestChunk)
 end
 
 function getNearestChunkToPlayer(playerPosition, chunksList)
-    local nearestDistance = nil
-    local nearestChunk = nil
-
+    local nearestDistance
+    local nearestChunk
     for _, chunk in pairs(chunksList) do
         local distance = (playerPosition.x - chunk.x * 32)^2 + (playerPosition.y - chunk.y * 32)^2
 
@@ -32,9 +31,3 @@ function getNearestChunkToPlayer(playerPosition, chunksList)
 
     return nearestChunk
 end
-
-return {
-    getDirectionToNearestChunk = getDirectionToNearestChunk,
-    getNearestChunkToPlayer = getNearestChunkToPlayer
-
-}

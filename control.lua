@@ -1,5 +1,6 @@
 require("clones/clones")
 require("clones/player")
+require("clones/clones_check")
 require("clones/area")
 require("clones/direction")
 require("buttons/spawn_clone_button")
@@ -23,15 +24,6 @@ script.on_event(defines.events.on_tick,
                         end
                     end
                 end
-            end
-        end
-)
-
-script.on_event(defines.events.on_player_changed_position,
-        function(event)
-            local character = game.get_player(event.player_index)
-            if settings.global["trail-for-unit"].value == "player" or settings.global["trail-for-unit"].value =="all" then
-                spawn_trail(character)
             end
         end
 )

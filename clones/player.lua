@@ -19,6 +19,13 @@ function calculate_front_position(position, direction)
     end
 end
 
-return {
-    calculate_front_position = calculate_front_position
-}
+
+
+script.on_event(defines.events.on_player_changed_position,
+        function(event)
+            local character = game.get_player(event.player_index)
+            if settings.global["trail-for-unit"].value == "player" or settings.global["trail-for-unit"].value =="all" then
+                spawn_trail(character)
+            end
+        end
+)

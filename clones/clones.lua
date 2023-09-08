@@ -1,27 +1,4 @@
 -- returns true if the character moved and false if not
-function is_character_moved(character)
-    if not kagebunshins_cords[character] then
-        kagebunshins_cords[character] = {
-            old_x = character.position.x,
-            old_y = character.position.y
-        }
-        return true
-    end
-
-    local cords = kagebunshins_cords[character]
-
-    if not (cords.x or cords.y) then
-        cords.x = character.position.x
-        cords.y = character.position.y
-        return true
-    end
-    is_moved = not (cords.old_x == cords.x and cords.old_y == cords.y)
-    cords.old_x = cords.x
-    cords.old_y = cords.y
-    cords.x = character.position.x
-    cords.y = character.position.y
-    return is_moved
-end
 
 function create_new_character_behind_player(player, direction)
     local player_position = player.position
@@ -50,23 +27,14 @@ function create_character(player, direction)
     kagebunshins[new_character] = new_character
 end
 
+
 function delete_character(character)
     character.destroy()
     kagebunshins[character] = nil
     kagebunshins_cords[character] = nil
 end
 
-function obstacle_avoidance(character)
-    character.walking_state = {walking=true, direction = defines.direction.south}
-end
-
-
-
-
-
-
 -- updates the map for one character
---
 function update_chart (character)
 
     local radius = 100  -- Adjust the exploration radius as needed
@@ -76,6 +44,7 @@ function update_chart (character)
         {character.position.x+radius, character.position.y+radius}
     })
 end
+
 
 function spawn_trail(character)
     local trail_particles = settings.global["trail-particles"].value
@@ -97,14 +66,3 @@ function spawn_trail(character)
     end
 end
 
-
-
-return {
-    delete_character = delete_character,
-    create_character = create_character,
-    create_new_character_behind_player = create_new_character_behind_player,
-    is_character_moved = is_character_moved,
-    obstacle_avoidance = obstacle_avoidance,
-    update_chart = update_chart,
-    getDirectionToNearestChunk = getDirectionToNearestChunk
-}

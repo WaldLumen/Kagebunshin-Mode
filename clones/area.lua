@@ -48,10 +48,3 @@ function findEdgeExploredChunks(surface)
 
     return edgeExploredChunks
 end
-
-
-
-return {
-    getExploredChunks = getExploredChunks,
-    findEdgeExploredChunks = findEdgeExploredChunks,
-}
