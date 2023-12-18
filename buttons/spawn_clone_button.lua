@@ -1,14 +1,16 @@
 _direction = nil
+mod_gui = require('mod-gui')
 
 -- Создаем новую кнопку
 local function createHelloButton(player)
-    local button = player.gui.top["kagebunshins_spawn"]
+    local button_flow = mod_gui.get_button_flow(player)
+    local button = button_flow["kagebunshins_spawn"]
     if not (button and button.valid) then
-        button = player.gui.top.add{
+        button = button_flow.add{
             type = "button",
             name = "kagebunshins_spawn",
-            caption = "Clones",
-            tooltip = "Click to spawn clone"
+            caption = {"kagebunshin-gui.caption"},
+            tooltip = {"kagebunshin-gui.tooltip"}
         }
     end
     return button
@@ -34,10 +36,22 @@ script.on_event(defines.events.on_player_joined_game,
     end
 end)
 
+script.on_event(defines.events.on_console_command,
+        function(event)
+            local player = game.players[event.player_index]
+            local command = event.command
+            if player and player.valid then
+                if command == "spawn_button" then
+                    createHelloButton(player)
+                end
+            end
+        end)
+
+
 script.on_event(defines.events.on_gui_click,
         function(event)
     if event.element and event.element.name == "kagebunshins_spawn" then
-        onButtonClick(game.players[1])
+        onButtonClick(game.players[event.player_index])
     end
 end)
 
